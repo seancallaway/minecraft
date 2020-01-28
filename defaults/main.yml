@@ -1,0 +1,21 @@
+---
+# defaults file for minecraft
+
+# server.properties DEFAULTS
+view_distance: 10
+game_mode: creative
+port: 25565
+allow_nether: "true"
+command_block: "false"
+allow_rcon: "false"
+level_name: world
+motd: "Welcome to Minecraft!"
+player_idle_timeout: 0
+online_mode: "true"
+allow_flight: "false"
+force_gamemode: "false"
+hardcore: "false"
+pvp: "false"
+max_players: 10
+difficulty: easy
+
