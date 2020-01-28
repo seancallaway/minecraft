@@ -1,0 +1,127 @@
+---
+# tasks file for minecraft
+
+- name: Install Required Packages
+  yum:
+    name:
+      - java-1.8.0-openjdk-headless
+    state: latest
+
+- name: Create Minecraft User
+  user:
+    name: minecraft
+    shell: /sbin/nologin
+
+- name: Create Minecraft Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0700'
+    owner: minecraft
+    group: minecraft
+  with_items:
+    - "{{ mc_root }}"
+    - "{{ mc_root }}/backups"
+    - "{{ mc_root }}/server"
+
+- name: Determine if JAR is Downloaded
+  stat:
+    path: "{{ mc_root }}/server/server.jar"
+  register: mc_jar
+
+- name: Get Minecraft JAR (Initial Install or Update)
+  block:
+  - name: Get JAR Download Page
+    get_url:
+      url: https://www.minecraft.net/en-us/download/server
+      dest: /var/tmp/mc_jar_url.html
+      mode: '0444'
+      owner: minecraft
+      group: minecraft
+  - name: Determine JAR URL
+    shell: awk -F '"' '/\.jar/ {print $2; exit}' /var/tmp/mc_jar_url.html
+    register: mc_jar_url
+  - name: Download Server JAR
+    get_url:
+      url: "{{ mc_jar_url.stdout }}"
+      dest: "{{ mc_root }}/server/server.jar"
+      mode: '0444'
+      owner: minecraft
+      group: minecraft
+  - name: Remove Temp File
+    file:
+      path: /var/tmp/mc_jar_url.html
+      state: absent
+  when: mc_jar.stat.exists == False or mc_update
+
+- name: Determine if EULA exists
+  stat:
+    path: "{{ mc_root }}/server/eula.txt"
+  register: mc_eula_file
+
+- name: Accept EULA
+  block:
+  - name: Run server for no more than 60 seconds
+    shell:
+      chdir: "{{ mc_root }}/server/"
+      cmd: timeout 60 java -Xmx1024M -Xms512M -jar server.jar nogui
+    ignore_errors: yes
+  - name: Agree to EULA
+    lineinfile:
+      path: "{{ mc_root }}/server/eula.txt"
+      line: 'eula=true'
+      mode: '0444'
+      group: minecraft
+  when: mc_eula_file.stat.exists == False
+
+- name: Install Minecraft SystemD Unit File
+  template:
+    src: templates/minecraft.service.j2
+    dest: /etc/systemd/system/minecraft.service
+    mode: '0444'
+    owner: root
+    group: root
+  register: systemd_file_installed
+
+- name: Perform Daemon Reload
+  systemd:
+    daemon_reload: yes
+  when: systemd_file_installed.changed
+
+- name: Install server.properties File
+  template:
+    src: templates/server.properties.j2
+    dest: "{{ mc_root }}/server/server.properties"
+    mode: '0600'
+    owner: minecraft
+    group: minecraft
+
+- name: Start/Enable Minecraft Service
+  systemd:
+    state: started
+    enabled: yes
+    name: minecraft
+  register: mc_started
+
+- name: Restart Minecraft if Not Started Previously or Updated
+  systemd:
+    state: restarted
+    name: minecraft
+  when: mc_update or not mc_started.changed
+
+- name: Install Backup Script
+  template:   
+    src: templates/backup.sh.j2
+    dest: /usr/local/bin/minecraft_backup
+    mode: '0500'
+    owner: minecraft
+    group: minecraft    
+
+- name: Setup Backup Cron Job
+  cron:
+    name: "minecraft backup"
+    minute: "0"
+    hour: "*/3"
+    state: present
+    user: minecraft
+    job: /usr/local/bin/minecraft_backup
