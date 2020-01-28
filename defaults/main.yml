@@ -1,6 +1,11 @@
 ---
 # defaults file for minecraft
 
+mc_update: False
+mc_root: /opt/minecraft
+max_memory: 2048M
+min_memory: 512M
+
 # server.properties DEFAULTS
 view_distance: 10
 game_mode: creative
