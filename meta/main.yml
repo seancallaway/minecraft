@@ -1,0 +1,16 @@
+galaxy_info:
+  author: Sean Callaway
+  description: A role for installing/starting Minecraft on EL7.
+  license: license (BSD)
+  min_ansible_version: 2.7
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  galaxy_tags:
+    - game
+    - games
+    - minecraft
+    - server
+
+dependencies: []
