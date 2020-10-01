@@ -1,11 +1,8 @@
 ---
 # tasks file for minecraft
 
-- name: Install Required Packages
-  yum:
-    name:
-      - java-1.8.0-openjdk-headless
-    state: latest
+- include: redhat.yml
+  when: ansible_os_family | lower == 'redhat'
 
 - name: Create Minecraft User
   user:
