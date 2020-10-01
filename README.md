@@ -74,4 +74,4 @@ BSD
 Author Information
 ------------------
 
-Written by Chad Geary. Converted to a role by Sean Callaway.
+Originally written by Chad Geary. Updated and converted to a role by Sean Callaway.
