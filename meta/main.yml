@@ -4,9 +4,18 @@ galaxy_info:
   license: license (BSD)
   min_ansible_version: 2.7
   platforms:
+  - name: Ubuntu
+    versions:
+      - bionic
+      - xenial
+  - name: Debian
+    versions:
+      - stretch
+      - buster
   - name: EL
     versions:
-    - 7
+      - 7
+      - 8
   galaxy_tags:
     - game
     - games

@@ -1,7 +1,7 @@
 Minecraft
 =========
 
-An Ansible role for installing / starting minecraft on RHEL/CentOS 7 server with backup cron.
+An Ansible role for installing / starting minecraft on RHEL/CentOS or Debian/Ubuntu server with backup cron.
 
 Requirements
 ------------
