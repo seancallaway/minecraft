@@ -1,0 +1,8 @@
+---
+# task file for Debian-based distributions
+
+- name: Install Required Packages
+  apt:
+    name:
+      - openjdk-8-jre-headless
+    state: latest

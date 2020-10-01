@@ -4,6 +4,9 @@
 - include: redhat.yml
   when: ansible_os_family | lower == 'redhat'
 
+- include: debian.yml
+  when: ansible_os_family | lower == 'debian'
+
 - name: Create Minecraft User
   user:
     name: minecraft
