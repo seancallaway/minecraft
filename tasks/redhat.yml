@@ -1,0 +1,8 @@
+---
+# task file for EL-distributions
+
+- name: Install Required Packages
+  yum:
+    name:
+      - java-1.8.0-openjdk-headless
+    state: latest

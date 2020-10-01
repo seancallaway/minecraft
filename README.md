@@ -1,7 +1,7 @@
 Minecraft
 =========
 
-An Ansible role for installing / starting minecraft on RHEL/CentOS 7 server with backup cron.
+An Ansible role for installing / starting minecraft on RHEL/CentOS or Debian/Ubuntu server with backup cron.
 
 Requirements
 ------------
@@ -74,4 +74,4 @@ BSD
 Author Information
 ------------------
 
-Written by Chad Geary. Converted to a role by Sean Callaway.
+Originally written by Chad Geary. Updated and converted to a role by Sean Callaway.

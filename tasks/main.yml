@@ -1,11 +1,11 @@
 ---
 # tasks file for minecraft
 
-- name: Install Required Packages
-  yum:
-    name:
-      - java-1.8.0-openjdk-headless
-    state: latest
+- include: redhat.yml
+  when: ansible_os_family | lower == 'redhat'
+
+- include: debian.yml
+  when: ansible_os_family | lower == 'debian'
 
 - name: Create Minecraft User
   user:
@@ -41,6 +41,7 @@
   - name: Determine JAR URL
     shell: awk -F '"' '/\.jar/ {print $2; exit}' /var/tmp/mc_jar_url.html
     register: mc_jar_url
+    changed_when: false
   - name: Download Server JAR
     get_url:
       url: "{{ mc_jar_url.stdout }}"
